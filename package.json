@@ -18,7 +18,7 @@
     "express": "^4.18.3"
   },
   "devDependencies": {
-    "@types/jest": "^29.5.14",
+    "@jest/globals": "^29.7.0",
     "@types/supertest": "^6.0.2",
     "prisma": "^5.10.0",
     "supertest": "7.0.0",
