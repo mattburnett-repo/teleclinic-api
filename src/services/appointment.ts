@@ -1,9 +1,13 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, Appointment as PrismaAppointment } from '@prisma/client'
 import type { Appointment, TimeSlot } from '../types'
 
 const prisma = new PrismaClient()
 
-export async function scheduleAppointment(doctorId: string, inquiryId: string, time: string): Promise<Appointment> {
+export async function scheduleAppointment(
+  doctorId: string, 
+  inquiryId: string, 
+  time: string
+): Promise<Appointment> {
   // Get doctor's first available slot
   const doctor = await prisma.doctor.findUnique({
     where: { id: doctorId }
@@ -34,8 +38,8 @@ export async function scheduleAppointment(doctorId: string, inquiryId: string, t
         status: 'scheduled',
         confirmed: false
       }
-    })
-    
+    }) as PrismaAppointment
+
     // Update doctor availability
     await tx.doctor.update({
       where: { id: doctorId },
@@ -46,7 +50,14 @@ export async function scheduleAppointment(doctorId: string, inquiryId: string, t
       }
     })
     
-    return appointment as Appointment
+    return {
+      id: appointment.id,
+      doctorId: appointment.doctorId,
+      inquiryId: appointment.inquiryId,
+      time: appointment.time,
+      status: appointment.status as Appointment['status'],
+      confirmed: appointment.confirmed
+    }
   })
 }
 
@@ -67,16 +78,31 @@ export async function confirmAppointment(appointmentId: string): Promise<Appoint
   const appointment = await prisma.appointment.update({
     where: { id: appointmentId },
     data: { confirmed: true }
-  })
+  }) as PrismaAppointment
   
-  return appointment as Appointment
+  return {
+    id: appointment.id,
+    doctorId: appointment.doctorId,
+    inquiryId: appointment.inquiryId,
+    time: appointment.time,
+    status: appointment.status as Appointment['status'],
+    confirmed: appointment.confirmed
+  }
 }
 
 export async function getAppointment(appointmentId: string): Promise<Appointment> {
   const appointment = await prisma.appointment.findUnique({
     where: { id: appointmentId }
-  })
+  }) as PrismaAppointment
   
   if (!appointment) throw new Error('Appointment not found')
-  return appointment as Appointment
+  
+  return {
+    id: appointment.id,
+    doctorId: appointment.doctorId,
+    inquiryId: appointment.inquiryId,
+    time: appointment.time,
+    status: appointment.status as Appointment['status'],
+    confirmed: appointment.confirmed
+  }
 } 
