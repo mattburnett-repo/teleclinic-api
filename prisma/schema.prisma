@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model HealthInquiry {
+  id          String       @id @default(uuid())
+  patientName String
+  symptoms    String
+  urgency     String       @default("medium")
+  status      String       @default("pending")
+  createdAt   DateTime     @default(now())
+  doctorMatch DoctorMatch?
+
+  // Reverse relation from Appointment
+  appointments Appointment[]
+}
+
+model Doctor {
+  id           String        @id @default(uuid())
+  name         String
+  speciality   String
+  availability String[]
+  imageUrl     String?
+  rating       Float
+  experience   Int
+  matches      DoctorMatch[]
+
+  // Reverse relation from Appointment
+  appointments Appointment[]
+}
+
+model DoctorMatch {
+  id        String        @id @default(uuid())
+  doctorId  String
+  inquiryId String        @unique
+  doctor    Doctor        @relation(fields: [doctorId], references: [id])
+  inquiry   HealthInquiry @relation(fields: [inquiryId], references: [id])
+}
+
+model Appointment {
+  id        String  @id @default(uuid())
+  doctorId  String
+  inquiryId String
+  time      String
+  status    String  @default("scheduled")
+  confirmed Boolean @default(false)
+  
+  doctor    Doctor  @relation(fields: [doctorId], references: [id])
+  inquiry   HealthInquiry @relation(fields: [inquiryId], references: [id])
+}
