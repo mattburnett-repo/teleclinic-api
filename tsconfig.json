@@ -30,6 +30,7 @@
     "**/tailwind.config.js",
     "**/prisma/seed.js",
     "**/jest.config.js",
-    "**/postcss.config.js"
+    "**/postcss.config.js",
+    "dist"
   ]
 }
