@@ -1,4 +1,4 @@
-import { Router } from 'express'
+import { Router, ErrorRequestHandler } from 'express'
 import healthInquiryRoutes from './healthInquiry.js'
 import doctorRoutes from './doctor.js'
 import appointmentRoutes from './appointment.js'
@@ -12,7 +12,6 @@ router.use('/api/doctors', doctorRoutes)
 router.use('/api/appointments', appointmentRoutes)
 router.use('/api/patients', patientRecordRoutes)
 
-// Error handling middleware
-router.use(errorHandler)
+router.use(errorHandler as ErrorRequestHandler)
 
 export default router 

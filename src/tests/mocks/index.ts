@@ -1,3 +1,6 @@
+import { jest } from '@jest/globals'
+import type { HealthInquiry, DoctorMatch } from '../../types'
+
 // Single source of mock data
 export const mockData = {
   patient: {
@@ -22,11 +25,13 @@ export const mockData = {
   }
 };
 
-// Service mocks
+// Service mocks with proper return types
 export const mockServices = {
-  createInquiry: jest.fn().mockResolvedValue(mockData.healthInquiry),
-  matchDoctorToInquiry: jest.fn().mockResolvedValue({
-    doctorId: mockData.doctor.id,
-    inquiryId: mockData.healthInquiry.id
-  })
+  createInquiry: jest.fn<(patientName: string, symptoms: string) => Promise<HealthInquiry>>()
+    .mockResolvedValue(mockData.healthInquiry as HealthInquiry),
+  matchDoctorToInquiry: jest.fn<(inquiryId: string) => Promise<DoctorMatch>>()
+    .mockResolvedValue({
+      doctorId: mockData.doctor.id,
+      inquiryId: mockData.healthInquiry.id
+    } as DoctorMatch)
 }; 
