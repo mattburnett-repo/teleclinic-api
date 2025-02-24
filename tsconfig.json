@@ -15,11 +15,6 @@
       "ES2020",
       "DOM"
     ],
-    "types": [
-      "jest",
-      "node",
-      "supertest"
-    ],
     "module": "ESNext",
     "moduleResolution": "node",
     "esModuleInterop": true,
