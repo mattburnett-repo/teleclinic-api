@@ -3,6 +3,10 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 async function main() {
+  // Delete existing data to prevent duplication
+  await prisma.healthInquiry.deleteMany();
+  await prisma.doctor.deleteMany();
+  
   // Create test doctors
   await prisma.doctor.create({
     data: {
